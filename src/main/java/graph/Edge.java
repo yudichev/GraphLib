@@ -6,6 +6,8 @@ package graph;
  * By default, the edge is directed, even if used in undirected graphs.
  * 'From' and 'to' are formal and can be swapped in undirected graphs.
  * In directed graphs, the direction is 'from' -> 'to'.
+ *
+ * Thread safe
  */
 public class Edge
 {

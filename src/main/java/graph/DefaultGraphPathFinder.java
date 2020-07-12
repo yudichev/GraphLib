@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
  * Implements default algorithm of finding a path between two vertices.
  * The length of the paths is limited by 255 in order to avoid stack overflow exception
  * as the algorithm uses recursive method invocation.
+ *
+ * Not thread safe.
  */
 final class DefaultGraphPathFinder implements GraphPathFinder<Edge>
 {

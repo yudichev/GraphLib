@@ -3,6 +3,7 @@ package graph;
 /**
  * Implements a weighed edges. Extends {@link Edge} by adding a weight.
  * Weight is represented by a {@code float} value.
+ * Thread safe.
  */
 public class WeighedEdge extends Edge
 {

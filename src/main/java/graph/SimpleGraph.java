@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -18,23 +20,31 @@ import java.util.stream.Collectors;
  *
  * Allows to find a path between two vertices and return a list vertices.
  *
+ * Thread safe.
+ *
  * @param <V> defines the type of the object associated with a vertex
  * @param <T> defines the type of the edge. A subclass of {@link Edge}
  */
 
 public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 {
-	private final AtomicInteger verticesCounter = new AtomicInteger();
+	private int verticesCounter = 0;
 	private final ArrayList<V> vertices;
 	private final HashSet<T> edges;
 	private final boolean directed;
+
+	private final ReadWriteLock verticesLock = new ReentrantReadWriteLock();
+	private final ReadWriteLock edgesLock = new ReentrantReadWriteLock();
+	private final Lock readVerticesLock = verticesLock.readLock();
+	private final Lock writeVerticesLock = verticesLock.writeLock();
+	private final Lock readEdgesLock = edgesLock.readLock();
+	private final Lock writeEdgesLock = edgesLock.writeLock();
 
 
 	private SimpleGraph(int vertexCapacity, int edgeCapacity, boolean directed)
 	{
      this.vertices = new ArrayList<>(vertexCapacity);
      this.edges = new HashSet<>(edgeCapacity);
-     verticesCounter.set(0);
      this.directed = directed;
 	}
 
@@ -68,13 +78,17 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	@Override public int addVertex(V o)
 	{
-		int vertexID;
-		synchronized(vertices)
+		writeVerticesLock.lock();
+		try
 		{
 			vertices.add(o);
-			vertexID = verticesCounter.incrementAndGet();
+			int vertexID = ++verticesCounter;
+			return vertexID;
 		}
-		return vertexID;
+		finally
+		{
+			writeVerticesLock.unlock();
+		}
 	}
 
 	/**
@@ -83,15 +97,27 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	@Override public void addEdge(T edge)
 	{
-		int last = verticesCounter.get();
-
-		if(last < edge.getFrom() || last < edge.getTo())
+		readVerticesLock.lock();
+		try
 		{
-			throw new IllegalArgumentException("Unable to add edge: vertex " + edge.getFrom() + " or " + edge.getTo() + " not found." );
+			if(verticesCounter < edge.getFrom() || verticesCounter < edge.getTo())
+			{
+				throw new IllegalArgumentException("Unable to add edge: vertex " + edge.getFrom() + " or " + edge.getTo() + " not found.");
+			}
 		}
-		synchronized(edges)
+		finally
+		{
+			readVerticesLock.unlock();
+		}
+
+		writeEdgesLock.lock();
+		try
 		{
 			edges.add(edge);
+		}
+		finally
+		{
+			writeEdgesLock.unlock();
 		}
 	}
 
@@ -138,21 +164,31 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	public List<V> getVertices()
 	{
 		List<V> verticesCopy;
-		synchronized(vertices)
+		readVerticesLock.lock();
+		try
 		{
 			verticesCopy = vertices.stream().sequential().collect(Collectors.toList());
+		}
+		finally
+		{
+			readVerticesLock.unlock();
 		}
 		return verticesCopy;
 	}
 
 	@Override public void apply(UnaryOperator<V> function)
 	{
-		synchronized(vertices)
+		writeVerticesLock.lock();
+		try
 		{
 			for(int id = 1; id <= vertices.size(); id++)
 			{
 				vertices.set(id - 1, function.apply(vertices.get(id - 1)));
 			}
+		}
+		finally
+		{
+			writeVerticesLock.unlock();
 		}
 	}
 
@@ -169,9 +205,14 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 		Map<Integer,List<T>> edgesMap;
 		List<T> copyOfEdges;
 
-		synchronized(edges)
+		readEdgesLock.lock();
+		try
 		{
 			copyOfEdges = edges.stream().map(Edge::copy).map(edge -> (T) edge).collect(Collectors.toList());
+		}
+		finally
+		{
+			readEdgesLock.unlock();
 		}
 
 		if(!directed)
@@ -193,11 +234,14 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	public String toString()
 	{
-		String str;
-		synchronized(edges)
+		readEdgesLock.lock();
+		try
 		{
-			str = edges.stream().map(Edge::toString).collect(Collectors.joining(","));
+			return edges.stream().map(Edge::toString).collect(Collectors.joining(","));
 		}
-		return str;
+		finally
+		{
+			readEdgesLock.unlock();
+		}
 	}
 }
