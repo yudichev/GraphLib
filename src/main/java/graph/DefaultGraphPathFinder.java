@@ -72,7 +72,8 @@ final class DefaultGraphPathFinder implements GraphPathFinder<Edge>
 
 			passedVertices.addAll(intermediateEdges.stream().map(Edge::getTo).collect(Collectors.toSet()));
 
-			Optional<List<Edge>> reversedSubPath = edges.get(false).stream().map(edge ->
+			Optional<List<Edge>> reversedSubPath = edges.get(false).stream()
+					.filter(edge -> !passedVertices.contains(edge.getTo())).map(edge ->
 				{
 					List<Edge> subPath = findReversedSubPath(edge.getTo(), to, depth + 1, passedVertices);
 					if(!subPath.isEmpty()) subPath.add(edge);
