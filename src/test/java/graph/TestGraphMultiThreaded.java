@@ -47,7 +47,7 @@ public class TestGraphMultiThreaded
 		graph.addEdge(new Edge(v4, v2));
 
 		List<Edge> path = graph.getPath(v1,v4);
-		System.out.println(path.stream().map(Edge::toString).collect(Collectors.joining()));
+		Assert.assertFalse(path.isEmpty());
 	}
 
 	private void addVerticesAndEdges(Graph<String,Edge> graph, CountDownLatch startLatch, CountDownLatch endLatch)
@@ -112,8 +112,9 @@ public class TestGraphMultiThreaded
 
 		Assert.assertEquals(25, graph.getVertices().size());
 
-		List<Edge> path = graph.getPath(1,20);
+		List<Edge> path = graph.getPath(5,20);
 		Assert.assertFalse(path.isEmpty());
+		System.out.println(path.stream().map(Edge::toString).collect(Collectors.joining()));
 	}
 
 	private Integer[] addVerticesAndEdgesAndGetID(Graph<String,Edge> graph, CountDownLatch startLatch)
