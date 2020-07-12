@@ -44,7 +44,6 @@ final class DefaultGraphPathFinder implements GraphPathFinder<Edge>
 	public List<Edge> find(int from, int to)
 	{
 		Set<Integer> passedVertices = new HashSet<>();
-		passedVertices.add(from);
 		List<Edge> foundSubPath = findReversedSubPath(from, to, 1, passedVertices );
 		Collections.reverse(foundSubPath);
 		return Collections.unmodifiableList(foundSubPath);
@@ -70,7 +69,7 @@ final class DefaultGraphPathFinder implements GraphPathFinder<Edge>
 			if(intermediateEdges.isEmpty())
 				return Collections.emptyList();
 
-			passedVertices.addAll(intermediateEdges.stream().map(Edge::getTo).collect(Collectors.toSet()));
+			passedVertices.addAll(intermediateEdges.stream().map(Edge::getFrom).collect(Collectors.toSet()));
 
 			Optional<List<Edge>> reversedSubPath = edges.get(false).stream()
 					.filter(edge -> !passedVertices.contains(edge.getTo())).map(edge ->
