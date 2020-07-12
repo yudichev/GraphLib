@@ -114,7 +114,6 @@ public class TestGraphMultiThreaded
 
 		List<Edge> path = graph.getPath(5,20);
 		Assert.assertFalse(path.isEmpty());
-		System.out.println(path.stream().map(Edge::toString).collect(Collectors.joining()));
 	}
 
 	private Integer[] addVerticesAndEdgesAndGetID(Graph<String,Edge> graph, CountDownLatch startLatch)
