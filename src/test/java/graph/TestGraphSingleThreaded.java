@@ -37,8 +37,6 @@ public class TestGraphSingleThreaded
 		{
 			Assert.assertEquals(path.get(i - 1).getTo(), path.get(i).getFrom());
 		}
-
-
 	}
 
 	@Test
@@ -143,5 +141,41 @@ public class TestGraphSingleThreaded
 		{
 			Assert.assertEquals(path.get(i - 1).getTo(), path.get(i).getFrom());
 		}
+	}
+
+	@Test
+	public void testCreateDirectedGraphWithWeighedEdges()
+	{
+		Graph<String,WeighedEdge> graph = SimpleGraph.newDirected(5, 10);
+		graph.addVertex("Vertex 1");
+		graph.addVertex("Vertex 2");
+		graph.addVertex("Vertex 3");
+		graph.addVertex("Vertex 4");
+		graph.addVertex("Vertex 5");
+
+
+		graph.addEdge(new WeighedEdge(1,2, 1.4f));
+		graph.addEdge(new WeighedEdge(2,3, 2.7f));
+		graph.addEdge(new WeighedEdge(2,4, 3.1f));
+		graph.addEdge(new WeighedEdge(3,5, 6.5f));
+		graph.addEdge(new WeighedEdge(4,3, 0.2f ));
+		graph.addEdge(new WeighedEdge(5,2, 12.f));
+		graph.addEdge(new WeighedEdge(1,3, 2.f));
+
+		List<WeighedEdge> path = graph.getPath(1, 4);
+		Assert.assertFalse(path.isEmpty());
+		WeighedEdge firstEdge = path.get(0);
+		Assert.assertEquals(1, firstEdge.getFrom());
+		WeighedEdge lastEdge = path.get(path.size() - 1);
+		Assert.assertEquals(4, lastEdge.getTo());
+
+		Assert.assertEquals("(3,5|6.5),(2,3|2.7),(4,3|0.2),(2,4|3.1),(1,2|1.4),(1,3|2.0),(5,2|12.0)", graph.toString());
+
+		for(int i = 1; i < path.size(); i++)
+		{
+			Assert.assertEquals(path.get(i - 1).getTo(), path.get(i).getFrom());
+		}
+
+
 	}
 }
