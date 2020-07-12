@@ -82,8 +82,8 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 		try
 		{
 			vertices.add(o);
-			int vertexID = ++verticesCounter;
-			return vertexID;
+			return ++verticesCounter;
+
 		}
 		finally
 		{
