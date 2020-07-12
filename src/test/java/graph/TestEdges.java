@@ -10,7 +10,7 @@ public class TestEdges
 	{
 		int from = 1;
 		int to = 2;
-		IEdge edge = EdgeImpl.newInstance(from, to);
+		Edge edge = new Edge(from, to);
 		Assert.assertEquals(from, edge.getFrom());
 		Assert.assertEquals(to, edge.getTo());
 	}
@@ -33,12 +33,20 @@ public class TestEdges
 	{
 		int from = 1;
 		int to = 2;
-		float weight = 1.5f;
 		Edge edge = new Edge(from, to);
 		Edge edgeReversed = edge.reverse();
 
 		Assert.assertEquals(to, edgeReversed.getFrom());
 		Assert.assertEquals(from, edgeReversed.getTo());
+	}
+
+	@Test
+	public void testEdgeToString()
+	{
+		int from = 1;
+		int to = 2;
+		Edge edge = new Edge(from, to);
+		Assert.assertEquals("(1,2)", edge.toString());
 	}
 
 
@@ -48,7 +56,7 @@ public class TestEdges
 		int from = 1;
 		int to = 2;
 		float weight = 1.5f;
-		IWeighedEdge edge = WeighedEdgeImpl.newInstance(from, to, weight);
+		WeighedEdge edge = new WeighedEdge(from, to, weight);
 		Assert.assertEquals(from, edge.getFrom());
 		Assert.assertEquals(to, edge.getTo());
 		Assert.assertEquals(weight, edge.getWeight(), 0.0f);
@@ -80,6 +88,16 @@ public class TestEdges
 		Assert.assertEquals(to, edgeReverse.getFrom());
 		Assert.assertEquals(from, edgeReverse.getTo());
 		Assert.assertEquals(weight, edgeReverse.getWeight(), 0.0f);
+	}
+
+	@Test
+	public void testWeightEdgeToString()
+	{
+		int from = 1;
+		int to = 2;
+		float weight = 1.5f;
+		WeighedEdge edge = new WeighedEdge(from, to, weight);
+		Assert.assertEquals("(1,2|1.5)", edge.toString());
 	}
 
 }
