@@ -110,6 +110,8 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 * @param to ID of the last vertex in the path
 	 * @return a list of edges ordered along the path.
 	 */
+
+	@SuppressWarnings("unchecked")
 	@Override public List<T> getPath(int from, int to)
 	{
 		return getPath(from, to, (GraphPathFinder<T>) new DefaultGraphPathFinder());
@@ -162,25 +164,26 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 		For undirected graphs, each undirected edge is represented by a couple of directed edges with opposite
 		orientation, except the case when the edge closes to the same vertex (from = to).
 	 */
+	@SuppressWarnings("unchecked")
 	private Map<Integer,List<T>> getTransitionsMap(){
 		Map<Integer,List<T>> edgesMap;
 		List<T> copyOfEdges;
 
 		synchronized(edges)
 		{
-			copyOfEdges = edges.stream().map(edge -> edge.copy()).map(edge -> (T) edge).collect(Collectors.toList());
+			copyOfEdges = edges.stream().map(Edge::copy).map(edge -> (T) edge).collect(Collectors.toList());
 		}
 
 		if(!directed)
 		{
 				List<T> reversedEdges = copyOfEdges.stream().filter(edge -> edge.getTo() != edge.getFrom())
-						.map(edge -> edge.reverse())
+						.map(Edge::reverse)
 						.map(edge -> (T) edge)
 						.collect(Collectors.toList());
 				copyOfEdges.addAll(reversedEdges);
 		}
 
-		edgesMap = copyOfEdges.stream().collect(Collectors.groupingBy(edge -> edge.getFrom()));
+		edgesMap = copyOfEdges.stream().collect(Collectors.groupingBy(Edge::getFrom));
 		return edgesMap;
 	}
 
@@ -193,7 +196,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 		String str;
 		synchronized(edges)
 		{
-			str = edges.stream().map(edge -> edge.toString()).collect(Collectors.joining(","));
+			str = edges.stream().map(Edge::toString).collect(Collectors.joining(","));
 		}
 		return str;
 	}

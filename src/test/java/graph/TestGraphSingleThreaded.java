@@ -169,14 +169,15 @@ public class TestGraphSingleThreaded
 		WeighedEdge lastEdge = path.get(path.size() - 1);
 		Assert.assertEquals(4, lastEdge.getTo());
 
-		Assert.assertTrue(graph.toString().contains("|"));
 
 		for(int i = 1; i < path.size(); i++)
 		{
 			Assert.assertEquals(path.get(i - 1).getTo(), path.get(i).getFrom());
 		}
 
-
+		//Assert that the edges are of type WeightEdge, rather than the superclass Edge
+		Assert.assertTrue(graph.toString().contains("|"));
+		Assert.assertTrue(firstEdge.toString().contains("|"));
 	}
 
 
@@ -191,7 +192,7 @@ public class TestGraphSingleThreaded
 		graph.addVertex(v2str);
 
 		List<String> vertices = graph.getVertices();
-		Assert.assertTrue(vertices.size() == 2);
+		Assert.assertEquals(2, vertices.size());
 
 		Assert.assertEquals(v1str,vertices.get(0));
 		Assert.assertEquals(v2str,vertices.get(1));
@@ -200,7 +201,7 @@ public class TestGraphSingleThreaded
 		Assert.assertEquals(v1str,vertices2.get(0));
 		Assert.assertEquals(v2str,vertices2.get(1));
 
-		Assert.assertFalse(vertices == vertices2);
+		Assert.assertNotSame(vertices, vertices2);
 	}
 
 	@Test
