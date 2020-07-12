@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class TestGraphMultiThreaded
 {
 	@Test
-	public void testGraphCreatedByMulitpleThreads() throws InterruptedException
+	public void testGraphCreatedByMultipleThreads() throws InterruptedException
 	{
 		Graph<String,Edge> graph = SimpleGraph.newDirected(30, 50);
 		CountDownLatch startLatch = new CountDownLatch(1);
@@ -79,14 +79,14 @@ public class TestGraphMultiThreaded
 
 
 	@Test
-	public void testUndirectedConnectedGraphCreatedByMulitpleThreads() throws InterruptedException, ExecutionException
+	public void testUndirectedConnectedGraphCreatedByMultipleThreads() throws InterruptedException, ExecutionException
 	{
 		Graph<String,Edge> graph = SimpleGraph.newUndirected(30, 50);
 		CountDownLatch startLatch = new CountDownLatch(1);
 		ExecutorService executorService = Executors.newCachedThreadPool();
 
 
-		Callable<Integer[]> task = () -> {return addVerticesAndEdgesAndGetID(graph, startLatch);};
+		Callable<Integer[]> task = () -> addVerticesAndEdgesAndGetID(graph, startLatch);
 		Future<Integer[]> future1 = executorService.submit(task);
 		Future<Integer[]> future2 = executorService.submit(task);
 		Future<Integer[]> future3 = executorService.submit(task);
@@ -95,14 +95,14 @@ public class TestGraphMultiThreaded
 
 
 		startLatch.countDown();
-		int vv12 = future1.get()[1].intValue();
-		int vv21 = future2.get()[0].intValue();
-		int vv22 = future2.get()[1].intValue();
-		int vv31 = future3.get()[0].intValue();
-		int vv32 = future3.get()[1].intValue();
-		int vv41 = future4.get()[0].intValue();
-		int vv42 = future4.get()[1].intValue();
-		int vv51 = future5.get()[0].intValue();
+		int vv12 = future1.get()[1];
+		int vv21 = future2.get()[0];
+		int vv22 = future2.get()[1];
+		int vv31 = future3.get()[0];
+		int vv32 = future3.get()[1];
+		int vv41 = future4.get()[0];
+		int vv42 = future4.get()[1];
+		int vv51 = future5.get()[0];
 
 		//Make graph connected
 		graph.addEdge(new Edge(vv12, vv21));
