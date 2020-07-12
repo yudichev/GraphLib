@@ -183,7 +183,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testVerticesCopiesAreDifferentCollections()
 	{
-		Graph<String,WeighedEdge> graph = SimpleGraph.newDirected(5, 10);
+		Graph<String,Edge> graph = SimpleGraph.newDirected(5, 10);
 		String v1str = "Vertex 1";
 		String v2str = "Vertex 2";
 
@@ -201,6 +201,28 @@ public class TestGraphSingleThreaded
 		Assert.assertEquals(v2str,vertices2.get(1));
 
 		Assert.assertFalse(vertices == vertices2);
+	}
+
+	@Test
+	public void testApplyFunctionToVertices()
+	{
+		Graph<String,Edge> graph = SimpleGraph.newDirected(5, 10);
+
+		graph.addVertex("Vertex 1");
+		graph.addVertex("Vertex 2");
+		graph.addVertex("Vertex 3");
+
+		List<String> vertices = graph.getVertices();
+
+		Assert.assertArrayEquals(new String[]{"Vertex 1","Vertex 2","Vertex 3"}, vertices.toArray());
+
+		graph.apply(str -> str + "A");
+
+		vertices = graph.getVertices();
+
+		Assert.assertArrayEquals(new String[]{"Vertex 1A","Vertex 2A","Vertex 3A"}, vertices.toArray());
+
+
 	}
 
 

@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 /** Interface for a Graph
  *  Defines adding a vertex, an edge,
@@ -48,4 +49,10 @@ public interface Graph<V, T extends Edge>
 	 * @return a collection of vertices
 	 */
 	List<V> getVertices();
+
+	/**
+	 * Applies a function to each vertex and replaces it with the result
+	 * @param function function that takes an object of type {@code V} and returns an object of the same type.
+	 */
+	void apply(UnaryOperator<V> function);
 }

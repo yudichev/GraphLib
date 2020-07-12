@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -140,6 +141,17 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 			verticesCopy = vertices.stream().sequential().collect(Collectors.toList());
 		}
 		return verticesCopy;
+	}
+
+	@Override public void apply(UnaryOperator<V> function)
+	{
+		synchronized(vertices)
+		{
+			for(int id = 1; id <= vertices.size(); id++)
+			{
+				vertices.set(id - 1, function.apply(vertices.get(id - 1)));
+			}
+		}
 	}
 
 	/*
