@@ -178,4 +178,30 @@ public class TestGraphSingleThreaded
 
 
 	}
+
+
+	@Test
+	public void testVerticesCopiesAreDifferentCollections()
+	{
+		Graph<String,WeighedEdge> graph = SimpleGraph.newDirected(5, 10);
+		String v1str = "Vertex 1";
+		String v2str = "Vertex 2";
+
+		graph.addVertex(v1str);
+		graph.addVertex(v2str);
+
+		List<String> vertices = graph.getVertices();
+		Assert.assertTrue(vertices.size() == 2);
+
+		Assert.assertEquals(v1str,vertices.get(0));
+		Assert.assertEquals(v2str,vertices.get(1));
+
+		List<String> vertices2 = graph.getVertices();
+		Assert.assertEquals(v1str,vertices2.get(0));
+		Assert.assertEquals(v2str,vertices2.get(1));
+
+		Assert.assertFalse(vertices == vertices2);
+	}
+
+
 }
