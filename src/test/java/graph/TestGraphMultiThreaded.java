@@ -50,6 +50,10 @@ public class TestGraphMultiThreaded
 			List<Edge> path = graph.getPath(v1, v4);
 			Assert.assertFalse(path.isEmpty());
 		}
+		catch(Throwable ex)
+		{
+			Assert.fail("No exception is expected here. Thrown: " + ex.getClass());
+		}
 		finally
 		{
 			executorService.shutdown();
@@ -121,6 +125,10 @@ public class TestGraphMultiThreaded
 
 			List<Edge> path = graph.getPath(5, 20);
 			Assert.assertFalse(path.isEmpty());
+		}
+		catch(Throwable ex)
+		{
+			Assert.fail("No exception is expected here. Thrown: " + ex.getClass());
 		}
 		finally
 		{
