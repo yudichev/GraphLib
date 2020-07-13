@@ -10,6 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public class TestGraphMultiThreaded
 {
@@ -158,6 +159,55 @@ public class TestGraphMultiThreaded
 		graph.addEdge(new Edge(v1,v5));
 		graph.addEdge(new Edge(v2,v1));
 		return new Integer[]{v1,v5};
+	}
+
+	@Test
+	public void testApplyFunctionToVertices() throws InterruptedException
+	{
+		Graph<String,Edge> graph = SimpleGraph.newDirected(5,10);
+		graph.addVertex("Vertex 1 ");
+		graph.addVertex("Vertex 2 ");
+		graph.addVertex("Vertex 3 ");
+		graph.addVertex("Vertex 4 ");
+		graph.addVertex("Vertex 5 ");
+
+		CountDownLatch startLatch = new CountDownLatch(1);
+		CountDownLatch endLatch = new CountDownLatch(10);
+		ExecutorService executorService = Executors.newCachedThreadPool();
+
+
+		try
+		{
+			for(int i = 0; i < 10; i++)
+			{
+				final String idx = String.valueOf(i);
+				Runnable task = () -> {
+					try
+					{
+						startLatch.await();
+						graph.apply(str -> " A[" + idx + "]");
+						endLatch.countDown();
+					}
+					catch(InterruptedException ex)
+					{
+						Thread.currentThread().interrupt();
+					}
+				};
+				executorService.execute(task);
+			}
+		}
+		finally
+		{
+			executorService.shutdown();
+		}
+
+		startLatch.countDown();
+		endLatch.await();
+
+		List<String> vertices = graph.getVertices();
+		String vertex1 = vertices.get(0);
+		List<String> difference = vertices.stream().filter(str -> !str.equals(vertex1)).collect(Collectors.toList());
+		Assert.assertTrue(difference.isEmpty());
 	}
 }
 
