@@ -65,9 +65,13 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	@Override public int addVertex(V o)
 	{
-		vertices.add(o);
-		verticesCounter.incrementAndGet();
-		return vertices.indexOf(o, vertices.size() - 1) + 1;
+		int id;
+		synchronized(vertices)
+		{
+			vertices.add(o);
+			id = verticesCounter.incrementAndGet();
+		}
+		return id;
 	}
 
 	/**

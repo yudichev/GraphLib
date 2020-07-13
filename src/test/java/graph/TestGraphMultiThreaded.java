@@ -195,19 +195,20 @@ public class TestGraphMultiThreaded
 				};
 				executorService.execute(task);
 			}
+
+			startLatch.countDown();
+			Thread.sleep(1000);
+			endLatch.await();
+			List<String> vertices = graph.getVertices();
+			String vertex1 = vertices.get(0);
+			System.out.println(vertices.stream().collect(Collectors.joining()));
+			List<String> difference = vertices.stream().filter(str -> !str.equals(vertex1)).collect(Collectors.toList());
+			Assert.assertTrue(difference.isEmpty());
 		}
 		finally
 		{
 			executorService.shutdown();
 		}
-
-		startLatch.countDown();
-		Thread.sleep(1000);
-		List<String> vertices = graph.getVertices();
-		String vertex1 = vertices.get(0);
-		List<String> difference = vertices.stream().filter(str -> !str.equals(vertex1)).collect(Collectors.toList());
-		Assert.assertTrue(difference.isEmpty());
-		endLatch.await();
 	}
 }
 
