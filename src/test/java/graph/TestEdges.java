@@ -20,7 +20,6 @@ public class TestEdges
 	{
 		int from = 1;
 		int to = 2;
-		float weight = 1.5f;
 		Edge edge = new Edge(from, to);
 		Edge edgeCopy = edge.copy();
 

@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,7 +14,7 @@ import java.util.concurrent.Future;
 public class TestGraphMultiThreaded
 {
 	@Test
-	public void testGraphCreatedByMultipleThreads() throws InterruptedException
+	public void testGraphCreatedByMultipleThreads()
 	{
 		Graph<String,Edge> graph = SimpleGraph.newDirected(30, 50);
 		CountDownLatch startLatch = new CountDownLatch(1);
@@ -88,7 +87,7 @@ public class TestGraphMultiThreaded
 
 
 	@Test
-	public void testUndirectedConnectedGraphCreatedByMultipleThreads() throws InterruptedException, ExecutionException
+	public void testUndirectedConnectedGraphCreatedByMultipleThreads()
 	{
 		Graph<String,Edge> graph = SimpleGraph.newUndirected(30, 50);
 		CountDownLatch startLatch = new CountDownLatch(1);
