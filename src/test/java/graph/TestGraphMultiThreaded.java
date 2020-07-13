@@ -48,11 +48,11 @@ public class TestGraphMultiThreaded
 			graph.addEdge(new Edge(v4, v2));
 
 			List<Edge> path = graph.getPath(v1, v4);
-			Assert.assertFalse(path.isEmpty());
+			Assert.assertFalse("Path 5->20 not found for graph: " + graph.toString(), path.isEmpty());
 		}
 		catch(Throwable ex)
 		{
-			Assert.fail("No exception is expected here. Thrown: " + ex.getClass());
+			Assert.fail("No exception is expected here. Thrown: " + ex.getClass() + " Message: " + ex.getMessage());
 		}
 		finally
 		{
@@ -124,11 +124,11 @@ public class TestGraphMultiThreaded
 			Assert.assertEquals(25, graph.getVertices().size());
 
 			List<Edge> path = graph.getPath(5, 20);
-			Assert.assertFalse(path.isEmpty());
+			Assert.assertFalse("Path 5->20 not found for graph: " + graph.toString(), path.isEmpty());
 		}
 		catch(Throwable ex)
 		{
-			Assert.fail("No exception is expected here. Thrown: " + ex.getClass());
+			Assert.fail("No exception is expected here. Thrown: " + ex.getClass() + " Message: " + ex.getMessage());
 		}
 		finally
 		{
