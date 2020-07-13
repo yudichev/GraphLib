@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	public List<V> getVertices()
 	{
-		return vertices.stream().sequential().collect(Collectors.toList());
+		return Collections.unmodifiableList(vertices.stream().sequential().collect(Collectors.toList()));
 	}
 
 	@Override public void apply(UnaryOperator<V> function)
@@ -168,7 +169,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 		}
 
 		edgesMap = copyOfEdges.stream().collect(Collectors.groupingBy(Edge::getFrom));
-		return edgesMap;
+		return Collections.unmodifiableMap(edgesMap);
 	}
 
 	/**
