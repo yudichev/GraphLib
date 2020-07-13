@@ -16,7 +16,7 @@ public class TestGraphMultiThreaded
 	@Test
 	public void testGraphCreatedByMultipleThreads()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newDirected(30, 50);
+		Graph<String,Edge> graph = SimpleGraph.newDirected();
 		CountDownLatch startLatch = new CountDownLatch(1);
 		CountDownLatch endLatch = new CountDownLatch(5);
 		ExecutorService executorService = Executors.newCachedThreadPool();
@@ -89,7 +89,7 @@ public class TestGraphMultiThreaded
 	@Test
 	public void testUndirectedConnectedGraphCreatedByMultipleThreads()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newUndirected(30, 50);
+		Graph<String,Edge> graph = SimpleGraph.newUndirected();
 		CountDownLatch startLatch = new CountDownLatch(1);
 		ExecutorService executorService = Executors.newCachedThreadPool();
 

@@ -43,7 +43,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 * Returns an instance of empty directed graph
 	 * @return an instance of directed graph
 	 */
-	public static <V,T extends Edge> Graph<V,T> newDirected(int vertexCapacity, int edgeCapacity)
+	public static <V,T extends Edge> Graph<V,T> newDirected()
 	{
 		return new SimpleGraph<>( true);
 	}
@@ -52,7 +52,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 Returns an instance of empty undirected graph
 	 * @return an instance of undirected graph
 	 */
-	public static <V,T extends Edge> Graph<V,T> newUndirected(int vertexCapacity, int edgeCapacity)
+	public static <V,T extends Edge> Graph<V,T> newUndirected()
 	{
 		return new SimpleGraph<>( false);
 	}

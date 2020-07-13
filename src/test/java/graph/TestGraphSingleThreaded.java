@@ -10,7 +10,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testCreateDirectedGraph()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newDirected(5, 10);
+		Graph<String,Edge> graph = SimpleGraph.newDirected();
 		graph.addVertex("Vertex 1");
 		graph.addVertex("Vertex 2");
 		graph.addVertex("Vertex 3");
@@ -42,7 +42,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testAddEdgeWithWrongVertexID()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newDirected(5, 10);
+		Graph<String,Edge> graph = SimpleGraph.newDirected();
 		graph.addVertex("Vertex 1");
 		graph.addVertex("Vertex 2");
 
@@ -68,7 +68,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testDirectedGraphPathEmpty()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newDirected(10, 20);
+		Graph<String,Edge> graph = SimpleGraph.newDirected();
 		int v1 = graph.addVertex("Vertex 1");
 		int v2 = graph.addVertex("Vertex 2");
 		int v3 = graph.addVertex("Vertex 3");
@@ -104,7 +104,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testCreateUndirectedGraph()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newUndirected(10, 20);
+		Graph<String,Edge> graph = SimpleGraph.newUndirected();
 		int v1 = graph.addVertex("Vertex 1");
 		int v2 = graph.addVertex("Vertex 2");
 		int v3 = graph.addVertex("Vertex 3");
@@ -146,7 +146,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testCreateDirectedGraphWithWeighedEdges()
 	{
-		Graph<String,WeighedEdge> graph = SimpleGraph.newDirected(5, 10);
+		Graph<String,WeighedEdge> graph = SimpleGraph.newDirected();
 		graph.addVertex("Vertex 1");
 		graph.addVertex("Vertex 2");
 		graph.addVertex("Vertex 3");
@@ -184,7 +184,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testVerticesCopiesAreDifferentCollections()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newDirected(5, 10);
+		Graph<String,Edge> graph = SimpleGraph.newDirected();
 		String v1str = "Vertex 1";
 		String v2str = "Vertex 2";
 
@@ -207,7 +207,7 @@ public class TestGraphSingleThreaded
 	@Test
 	public void testApplyFunctionToVertices()
 	{
-		Graph<String,Edge> graph = SimpleGraph.newDirected(5, 10);
+		Graph<String,Edge> graph = SimpleGraph.newDirected();
 
 		graph.addVertex("Vertex 1");
 		graph.addVertex("Vertex 2");
