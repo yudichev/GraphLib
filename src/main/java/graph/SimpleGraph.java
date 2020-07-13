@@ -154,7 +154,6 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<Integer,List<T>> getTransitionsMap(){
-		Map<Integer,List<T>> edgesMap;
 		List<T> copyOfEdges;
 
 		copyOfEdges = edges.stream().map(Edge::copy).map(edge -> (T) edge).collect(Collectors.toList());
@@ -167,9 +166,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 						.collect(Collectors.toList());
 				copyOfEdges.addAll(reversedEdges);
 		}
-
-		edgesMap = copyOfEdges.stream().collect(Collectors.groupingBy(Edge::getFrom));
-		return Collections.unmodifiableMap(edgesMap);
+		return Collections.unmodifiableMap(copyOfEdges.stream().collect(Collectors.groupingBy(Edge::getFrom)));
 	}
 
 	/**
