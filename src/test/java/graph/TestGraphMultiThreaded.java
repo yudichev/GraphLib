@@ -201,7 +201,6 @@ public class TestGraphMultiThreaded
 			endLatch.await();
 			List<String> vertices = graph.getVertices();
 			String vertex1 = vertices.get(0);
-			System.out.println(vertices.stream().collect(Collectors.joining()));
 			List<String> difference = vertices.stream().filter(str -> !str.equals(vertex1)).collect(Collectors.toList());
 			Assert.assertTrue(difference.isEmpty());
 		}
