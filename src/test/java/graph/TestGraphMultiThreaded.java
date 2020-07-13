@@ -167,11 +167,11 @@ public class TestGraphMultiThreaded
 	public void testApplyFunctionToVertices() throws InterruptedException
 	{
 		Graph<String,Edge> graph = SimpleGraph.newDirected(5,10);
-		graph.addVertex("Vertex 1 ");
-		graph.addVertex("Vertex 2 ");
-		graph.addVertex("Vertex 3 ");
-		graph.addVertex("Vertex 4 ");
-		graph.addVertex("Vertex 5 ");
+		graph.addVertex("Vertex");
+		graph.addVertex("Vertex");
+		graph.addVertex("Vertex");
+		graph.addVertex("Vertex");
+		graph.addVertex("Vertex");
 
 		CountDownLatch startLatch = new CountDownLatch(1);
 		CountDownLatch endLatch = new CountDownLatch(10);
@@ -204,11 +204,11 @@ public class TestGraphMultiThreaded
 		}
 
 		startLatch.countDown();
-		endLatch.await();
-
+		Thread.sleep(1000);
 		List<String> vertices = graph.getVertices();
 		String vertex1 = vertices.get(0);
 		List<String> difference = vertices.stream().filter(str -> !str.equals(vertex1)).collect(Collectors.toList());
 		Assert.assertTrue(difference.isEmpty());
+		endLatch.await();
 	}
 }
