@@ -33,16 +33,14 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 
 	private SimpleGraph(boolean directed)
 	{
-     this.vertices = new CopyOnWriteArrayList<V>();
-     this.edges = new CopyOnWriteArraySet<T>();
+     this.vertices = new CopyOnWriteArrayList<>();
+     this.edges = new CopyOnWriteArraySet<>();
      this.directed = directed;
      verticesCounter.set(0);
 	}
 
 	/**
 	 * Returns an instance of empty directed graph
-	 * @param vertexCapacity initial capacity of vertices
-	 * @param edgeCapacity initial capacity of edges
 	 * @return an instance of directed graph
 	 */
 	public static <V,T extends Edge> Graph<V,T> newDirected(int vertexCapacity, int edgeCapacity)
@@ -52,8 +50,6 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 
 	/**
 	 Returns an instance of empty undirected graph
-	 * @param vertexCapacity initial capacity of vertices
-	 * @param edgeCapacity initial capacity of edges
 	 * @return an instance of undirected graph
 	 */
 	public static <V,T extends Edge> Graph<V,T> newUndirected(int vertexCapacity, int edgeCapacity)
