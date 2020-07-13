@@ -1,9 +1,10 @@
 package graph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -24,18 +25,18 @@ import java.util.stream.Collectors;
 
 public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 {
-	private final AtomicInteger verticesCounter = new AtomicInteger();
-	private final ArrayList<V> vertices;
-	private final HashSet<T> edges;
+	private final CopyOnWriteArrayList<V> vertices;
+	private final CopyOnWriteArraySet<T> edges;
 	private final boolean directed;
+	private final AtomicInteger verticesCounter = new AtomicInteger();
 
 
-	private SimpleGraph(int vertexCapacity, int edgeCapacity, boolean directed)
+	private SimpleGraph(boolean directed)
 	{
-     this.vertices = new ArrayList<>(vertexCapacity);
-     this.edges = new HashSet<>(edgeCapacity);
-     verticesCounter.set(0);
+     this.vertices = new CopyOnWriteArrayList<V>();
+     this.edges = new CopyOnWriteArraySet<T>();
      this.directed = directed;
+     verticesCounter.set(0);
 	}
 
 	/**
@@ -46,7 +47,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	public static <V,T extends Edge> Graph<V,T> newDirected(int vertexCapacity, int edgeCapacity)
 	{
-		return new SimpleGraph<>(vertexCapacity, edgeCapacity, true);
+		return new SimpleGraph<>( true);
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	public static <V,T extends Edge> Graph<V,T> newUndirected(int vertexCapacity, int edgeCapacity)
 	{
-		return new SimpleGraph<>(vertexCapacity,edgeCapacity, false);
+		return new SimpleGraph<>( false);
 	}
 
 	/**
@@ -68,13 +69,9 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	@Override public int addVertex(V o)
 	{
-		int vertexID;
-		synchronized(vertices)
-		{
-			vertices.add(o);
-			vertexID = verticesCounter.incrementAndGet();
-		}
-		return vertexID;
+		vertices.add(o);
+		verticesCounter.incrementAndGet();
+		return vertices.indexOf(o, vertices.size() - 1) + 1;
 	}
 
 	/**
@@ -89,10 +86,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 		{
 			throw new IllegalArgumentException("Unable to add edge: vertex " + edge.getFrom() + " or " + edge.getTo() + " not found." );
 		}
-		synchronized(edges)
-		{
-			edges.add(edge);
-		}
+		edges.add(edge);
 	}
 
 	/**
@@ -137,22 +131,15 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	public List<V> getVertices()
 	{
-		List<V> verticesCopy;
-		synchronized(vertices)
-		{
-			verticesCopy = vertices.stream().sequential().collect(Collectors.toList());
-		}
-		return verticesCopy;
+		return vertices.stream().sequential().collect(Collectors.toList());
 	}
 
 	@Override public void apply(UnaryOperator<V> function)
 	{
-		synchronized(vertices)
+		ListIterator<V> iter = vertices.listIterator();
+		while(iter.hasNext())
 		{
-			for(int id = 1; id <= vertices.size(); id++)
-			{
-				vertices.set(id - 1, function.apply(vertices.get(id - 1)));
-			}
+			vertices.set(iter.nextIndex(), function.apply(iter.next()));
 		}
 	}
 
@@ -169,10 +156,7 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 		Map<Integer,List<T>> edgesMap;
 		List<T> copyOfEdges;
 
-		synchronized(edges)
-		{
-			copyOfEdges = edges.stream().map(Edge::copy).map(edge -> (T) edge).collect(Collectors.toList());
-		}
+		copyOfEdges = edges.stream().map(Edge::copy).map(edge -> (T) edge).collect(Collectors.toList());
 
 		if(!directed)
 		{
@@ -193,11 +177,6 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	public String toString()
 	{
-		String str;
-		synchronized(edges)
-		{
-			str = edges.stream().map(Edge::toString).collect(Collectors.joining(","));
-		}
-		return str;
+		return edges.stream().map(Edge::toString).collect(Collectors.joining(","));
 	}
 }
