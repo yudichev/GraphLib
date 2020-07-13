@@ -48,7 +48,7 @@ public class TestGraphMultiThreaded
 			graph.addEdge(new Edge(v4, v2));
 
 			List<Edge> path = graph.getPath(v1, v4);
-			Assert.assertFalse("Path 5->20 not found for graph: " + graph.toString(), path.isEmpty());
+			Assert.assertFalse("Path " + v1 + "->" + v4 + " not found for graph: " + graph.toString(), path.isEmpty());
 		}
 		catch(Throwable ex)
 		{
