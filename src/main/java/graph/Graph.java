@@ -1,6 +1,8 @@
 package graph;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 /** Interface for a Graph
@@ -15,9 +17,8 @@ public interface Graph<V, T extends Edge>
 	/**
 	 * Adds a vertex of type {@code V}
 	 * @param o an instance of object of type {@code V} assigned to the added vertex
-	 * @return the vertex ID
 	 */
-	int addVertex(V o);
+	void addVertex(int id, V o);
 
 	/**
 	 * Adds and edge. Each edge is an instance of either {@link Edge} or its descendants
@@ -46,9 +47,9 @@ public interface Graph<V, T extends Edge>
 
 	/**
 	 * Returns a snapshot of graphs' vertices collection.
-	 * @return a collection of vertices
+	 * @return a collection of vertices as a map
 	 */
-	List<V> getVertices();
+	Map<Integer, Optional<V>> getVertices();
 
 	/**
 	 * Applies a function to each vertex and replaces it with the result

@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TestGraphSingleThreaded
 {
@@ -11,13 +14,6 @@ public class TestGraphSingleThreaded
 	public void testCreateDirectedGraph()
 	{
 		Graph<String,Edge> graph = SimpleGraph.newDirected();
-		graph.addVertex("Vertex 1");
-		graph.addVertex("Vertex 2");
-		graph.addVertex("Vertex 3");
-		graph.addVertex("Vertex 4");
-		graph.addVertex("Vertex 5");
-
-
 		graph.addEdge(new Edge(1,2));
 		graph.addEdge(new Edge(2,3));
 		graph.addEdge(new Edge(2,4));
@@ -39,61 +35,24 @@ public class TestGraphSingleThreaded
 		}
 	}
 
-	@Test
-	public void testAddEdgeWithWrongVertexID()
-	{
-		Graph<String,Edge> graph = SimpleGraph.newDirected();
-		graph.addVertex("Vertex 1");
-		graph.addVertex("Vertex 2");
-
-
-		graph.addEdge(new Edge(1,2));
-
-		try
-		{
-			graph.addEdge(new Edge(2, 3));
-			Assert.fail("An exception must have been thrown here");
-		}
-		catch(IllegalArgumentException iaex)
-		{
-			Assert.assertEquals("Unable to add edge: vertex 2 or 3 not found.", iaex.getMessage());
-		}
-		catch(Throwable ex)
-		{
-			Assert.fail("IllegalArgumentException was expected here. Thrown: " + ex.getClass());
-		}
-	}
 
 
 	@Test
 	public void testDirectedGraphPathEmpty()
 	{
 		Graph<String,Edge> graph = SimpleGraph.newDirected();
-		int v1 = graph.addVertex("Vertex 1");
-		int v2 = graph.addVertex("Vertex 2");
-		int v3 = graph.addVertex("Vertex 3");
-		int v4 = graph.addVertex("Vertex 4");
-		int v5 = graph.addVertex("Vertex 5");
-		int v6 = graph.addVertex("Vertex 6");
-		int v7 = graph.addVertex("Vertex 7");
-		int v8 = graph.addVertex("Vertex 8");
-		int v9 = graph.addVertex("Vertex 9");
-		int v10 = graph.addVertex("Vertex 10");
 
-
-
-
-		graph.addEdge(new Edge(v1,v2));
-		graph.addEdge(new Edge(v2,v3));
-		graph.addEdge(new Edge(v3,v4));
-		graph.addEdge(new Edge(v1,v5));
-		graph.addEdge(new Edge(v5,v6));
-		graph.addEdge(new Edge(v6,v7));
-		graph.addEdge(new Edge(v7,v8));
-		graph.addEdge(new Edge(v7,v9));
-		graph.addEdge(new Edge(v9,v10));
-		graph.addEdge(new Edge(v8,v5));
-		graph.addEdge(new Edge(v7,v3));
+		graph.addEdge(new Edge(1,2));
+		graph.addEdge(new Edge(2,3));
+		graph.addEdge(new Edge(4,5));
+		graph.addEdge(new Edge(1,5));
+		graph.addEdge(new Edge(5,6));
+		graph.addEdge(new Edge(6,7));
+		graph.addEdge(new Edge(7,8));
+		graph.addEdge(new Edge(7,9));
+		graph.addEdge(new Edge(9,10));
+		graph.addEdge(new Edge(8,5));
+		graph.addEdge(new Edge(7,3));
 
 
 		List<Edge> path = graph.getPath(3, 7);
@@ -105,29 +64,17 @@ public class TestGraphSingleThreaded
 	public void testCreateUndirectedGraph()
 	{
 		Graph<String,Edge> graph = SimpleGraph.newUndirected();
-		int v1 = graph.addVertex("Vertex 1");
-		int v2 = graph.addVertex("Vertex 2");
-		int v3 = graph.addVertex("Vertex 3");
-		int v4 = graph.addVertex("Vertex 4");
-		int v5 = graph.addVertex("Vertex 5");
-		int v6 = graph.addVertex("Vertex 6");
-		int v7 = graph.addVertex("Vertex 7");
-		int v8 = graph.addVertex("Vertex 8");
-		int v9 = graph.addVertex("Vertex 9");
-		int v10 = graph.addVertex("Vertex 10");
-
-
-		graph.addEdge(new Edge(v1,v2));
-		graph.addEdge(new Edge(v2,v3));
-		graph.addEdge(new Edge(v3,v4));
-		graph.addEdge(new Edge(v1,v5));
-		graph.addEdge(new Edge(v5,v6));
-		graph.addEdge(new Edge(v6,v7));
-		graph.addEdge(new Edge(v7,v8));
-		graph.addEdge(new Edge(v7,v9));
-		graph.addEdge(new Edge(v9,v10));
-		graph.addEdge(new Edge(v8,v5));
-		graph.addEdge(new Edge(v7,v3));
+		graph.addEdge(new Edge(1,2));
+		graph.addEdge(new Edge(2,3));
+		graph.addEdge(new Edge(3,4));
+		graph.addEdge(new Edge(1,5));
+		graph.addEdge(new Edge(5,6));
+		graph.addEdge(new Edge(6,7));
+		graph.addEdge(new Edge(7,8));
+		graph.addEdge(new Edge(7,9));
+		graph.addEdge(new Edge(9,10));
+		graph.addEdge(new Edge(8,5));
+		graph.addEdge(new Edge(7,3));
 
 
 		List<Edge> path = graph.getPath(3, 7);
@@ -147,12 +94,6 @@ public class TestGraphSingleThreaded
 	public void testCreateDirectedGraphWithWeighedEdges()
 	{
 		Graph<String,WeighedEdge> graph = SimpleGraph.newDirected();
-		graph.addVertex("Vertex 1");
-		graph.addVertex("Vertex 2");
-		graph.addVertex("Vertex 3");
-		graph.addVertex("Vertex 4");
-		graph.addVertex("Vertex 5");
-
 
 		graph.addEdge(new WeighedEdge(1,2, 1.4f));
 		graph.addEdge(new WeighedEdge(2,3, 2.7f));
@@ -188,18 +129,18 @@ public class TestGraphSingleThreaded
 		String v1str = "Vertex 1";
 		String v2str = "Vertex 2";
 
-		graph.addVertex(v1str);
-		graph.addVertex(v2str);
+		graph.addVertex(1,v1str);
+		graph.addVertex(2,v2str);
 
-		List<String> vertices = graph.getVertices();
+		Map<Integer,Optional<String>> vertices = graph.getVertices();
 		Assert.assertEquals(2, vertices.size());
 
-		Assert.assertEquals(v1str,vertices.get(0));
-		Assert.assertEquals(v2str,vertices.get(1));
+		Assert.assertEquals(v1str,vertices.get(1).get());
+		Assert.assertEquals(v2str,vertices.get(2).get());
 
-		List<String> vertices2 = graph.getVertices();
-		Assert.assertEquals(v1str,vertices2.get(0));
-		Assert.assertEquals(v2str,vertices2.get(1));
+		Map<Integer,Optional<String>> vertices2 = graph.getVertices();
+		Assert.assertEquals(v1str,vertices2.get(1).get());
+		Assert.assertEquals(v2str,vertices2.get(2).get());
 
 		Assert.assertNotSame(vertices, vertices2);
 	}
@@ -209,18 +150,19 @@ public class TestGraphSingleThreaded
 	{
 		Graph<String,Edge> graph = SimpleGraph.newDirected();
 
-		graph.addVertex("Vertex 1");
-		graph.addVertex("Vertex 2");
-		graph.addVertex("Vertex 3");
+		graph.addVertex(1,"Vertex 1");
+		graph.addVertex(2,"Vertex 2");
+		graph.addVertex(3,"Vertex 3");
 
-		List<String> vertices = graph.getVertices();
+		List<String> vertices = graph.getVertices().values().stream()
+				.map(op -> op.orElse("")).collect(Collectors.toList());
 
 		Assert.assertArrayEquals(new String[]{"Vertex 1","Vertex 2","Vertex 3"}, vertices.toArray());
 
 		graph.apply(str -> str + "A");
 
-		vertices = graph.getVertices();
-
+		vertices = graph.getVertices().values().stream()
+				.map(op -> op.orElse("")).collect(Collectors.toList());
 		Assert.assertArrayEquals(new String[]{"Vertex 1A","Vertex 2A","Vertex 3A"}, vertices.toArray());
 
 

@@ -1,12 +1,12 @@
 package graph;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -26,18 +26,16 @@ import java.util.stream.Collectors;
 
 public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 {
-	private final CopyOnWriteArrayList<V> vertices;
+	private final ConcurrentHashMap<Integer,Optional<V>> vertices;
 	private final CopyOnWriteArraySet<T> edges;
 	private final boolean directed;
-	private final AtomicInteger verticesCounter = new AtomicInteger();
 
 
 	private SimpleGraph(boolean directed)
 	{
-     this.vertices = new CopyOnWriteArrayList<>();
+     this.vertices = new ConcurrentHashMap<>();
      this.edges = new CopyOnWriteArraySet<>();
      this.directed = directed;
-     verticesCounter.set(0);
 	}
 
 	/**
@@ -59,20 +57,14 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	}
 
 	/**
-	 * Adds a vertex to the graph, with an object of user-defined type assigned to the vertex.
-	 * Returns a unique ID of the vertex.
+	 * Adds a vertex with specified ID to the graph, with an object of user-defined type assigned to the vertex for.
+	 * If a vertex with the given ID is already present in the collection, it will be replaced with the new one.
+	 * @param id the ID of the vertex being added
 	 * @param o an instance of object of type {@code V} assigned to the added vertex
-	 * @return vertex ID
 	 */
-	@Override public int addVertex(V o)
+	@Override public void addVertex(int id, V o)
 	{
-		int id;
-		synchronized(vertices)
-		{
-			vertices.add(o);
-			id = verticesCounter.incrementAndGet();
-		}
-		return id;
+			vertices.put(id, Optional.of(o));
 	}
 
 	/**
@@ -81,12 +73,8 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	 */
 	@Override public void addEdge(T edge)
 	{
-		int last = verticesCounter.get();
-
-		if(last < edge.getFrom() || last < edge.getTo())
-		{
-			throw new IllegalArgumentException("Unable to add edge: vertex " + edge.getFrom() + " or " + edge.getTo() + " not found." );
-		}
+		vertices.putIfAbsent(edge.getTo(), Optional.empty());
+		vertices.putIfAbsent(edge.getFrom(), Optional.empty());
 		edges.add(edge);
 	}
 
@@ -127,21 +115,20 @@ public class SimpleGraph<V, T extends Edge> implements Graph<V, T>
 	}
 
 	/**
-	 * Returns a snapshot of the graph's vertices collection
-	 * @return a list of vertices
+	 * Returns a snapshot of the graph's vertices collection.
+	 * Returns a map where the key of an enrty is the ID of the vertex
+	 * @return a collection of vertices as a map
 	 */
-	public List<V> getVertices()
+	public Map<Integer, Optional<V>> getVertices()
 	{
-		return Collections.unmodifiableList(vertices.stream().sequential().collect(Collectors.toList()));
+		Map<Integer, Optional<V>> newMap = new HashMap<>(vertices.size());
+		vertices.forEach(newMap::put);
+		return Collections.unmodifiableMap(newMap);
 	}
 
 	@Override public void apply(UnaryOperator<V> function)
 	{
-		ListIterator<V> iter = vertices.listIterator();
-		while(iter.hasNext())
-		{
-			vertices.set(iter.nextIndex(), function.apply(iter.next()));
-		}
+		vertices.forEach((id,op) -> op.ifPresent(v -> vertices.put(id, Optional.of(function.apply(v)))));
 	}
 
 	/*
