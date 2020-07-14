@@ -1,6 +1,7 @@
 # GraphLib
 
 Test task for Natera. Implementation of a simple graph library.
+Uses CopyOnWriteArrayList and CopyOnWriteArraySet. Adding edges is independent of adding vertices.
 
 Simple Graph lib: 
 Should support 2 types of graphs - directed and undirected with 3 operations:
